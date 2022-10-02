@@ -18,7 +18,6 @@ public class UserDto {
 
     @Size(min = 4,max = 10,message = "password must be between 4 to 10 characters")
     @NotEmpty(message = "Password can not be empty")
-    @JsonIgnore
     private String password;
 
     public String getName() {
@@ -38,7 +37,6 @@ public class UserDto {
         this.email = email;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
