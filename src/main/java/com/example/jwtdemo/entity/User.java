@@ -23,6 +23,9 @@ public class User implements UserDetails{
 
     private String name;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Posts> postsList = new ArrayList<>();
+
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "id"))
     private List<Role> roles = new ArrayList<>();
@@ -98,5 +101,13 @@ public class User implements UserDetails{
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public List<Posts> getPostsList() {
+        return postsList;
+    }
+
+    public void setPostsList(List<Posts> postsList) {
+        this.postsList = postsList;
     }
 }

@@ -1,6 +1,9 @@
 package com.example.jwtdemo.payloads;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -16,11 +19,10 @@ public class UserDto {
     private String email;
 
     @Size(min = 4,max = 10,message = "password must be between 4 to 10 characters")
-<<<<<<< HEAD
+
     @NotEmpty(message = "Password can not be empty")
-=======
+
     @NotEmpty(message = "Password can not be mt")
->>>>>>> 77c0cf1c593c46fcf0d63f5d4a67bee2fdc24179
     private String password;
 
     public String getName() {
@@ -40,10 +42,12 @@ public class UserDto {
         this.email = email;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
