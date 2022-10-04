@@ -81,6 +81,8 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<UserDto> registerUser(@Valid @RequestBody UserDto userDto){
 
+        System.out.println(userDto);
+
         UserDto savedUserDto = userService.saveNewUser(userDto);
         return new ResponseEntity<UserDto>(savedUserDto, HttpStatus.CREATED);
     }
