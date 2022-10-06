@@ -8,14 +8,19 @@ import com.example.jwtdemo.entity.Posts;
 import com.example.jwtdemo.entity.User;
 import com.example.jwtdemo.exceptions.ResourceNotFoundExceptions;
 import com.example.jwtdemo.payloads.PostDto;
+import com.example.jwtdemo.payloads.PostResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -32,11 +37,14 @@ public class PostService {
     @Autowired
     private UtilityService utilityService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     public PostDto saveNewPost(PostDto postDto,Integer categoryId,Integer userId){
         Posts posts = new Posts();
 
-        posts.setPostTitle(postDto.getTitle());
-        posts.setPostContent(postDto.getPostBody());
+        posts.setPostTitle(postDto.getPostTitle());
+        posts.setPostContent(postDto.getPostContent());
         posts.setImageName("default.png");
 
         Date getFormatDate = utilityService.formatDate(new Date());
@@ -55,14 +63,8 @@ public class PostService {
         postsDao.save(posts);
 
         //To Return PostDto We populate postDto with Post Data From DB
-        PostDto postDto1 = new PostDto();
-        postDto1.setTitle(posts.getPostTitle());
-        postDto1.setPostBody(posts.getPostContent());
-        postDto1.setPostImageName(posts.getImageName());
-
-        Date getFormatDate1 = utilityService.formatDate(posts.getAddedDate());
-
-        postDto1.setPostAddedDate(getFormatDate1);
+        PostDto postDto1 = this.modelMapper.map(posts,PostDto.class);
+        postDto1.setAddedDate(utilityService.formatDate(posts.getAddedDate()));
 
         return postDto1;
     }
@@ -71,35 +73,20 @@ public class PostService {
         Posts post = postsDao.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundExceptions("post","id",postId));
 
-        PostDto postDto = new PostDto();
-        postDto.setTitle(post.getPostTitle());
-        postDto.setPostBody(post.getPostContent());
-        postDto.setPostImageName(post.getImageName());
-
-        Date getFormatDate = utilityService.formatDate(post.getAddedDate());
-
-        postDto.setPostAddedDate(getFormatDate);
-        return postDto;
+        return this.modelMapper.map(post,PostDto.class);
     }
 
     public PostDto updateAPost(Integer postId,PostDto postDto){
         Posts post = postsDao.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundExceptions("post","id",postId));
 
-        post.setPostTitle(postDto.getTitle());
-        post.setPostContent(postDto.getPostBody());
+        post.setPostTitle(postDto.getPostTitle());
+        post.setPostContent(postDto.getPostContent());
 
         postsDao.save(post);
 
-        PostDto postDto1 = new PostDto();
-        postDto1.setTitle(post.getPostTitle());
-        postDto1.setPostBody(post.getPostContent());
-        postDto1.setPostImageName(post.getImageName());
+        return this.modelMapper.map(post,PostDto.class);
 
-        Date getFormatDate = utilityService.formatDate(post.getAddedDate());
-
-        postDto1.setPostAddedDate(getFormatDate);
-        return postDto1;
     }
 
     public List<PostDto> getPostsByUserId(Integer userId){
@@ -110,14 +97,9 @@ public class PostService {
         List<PostDto> postDtoList = new ArrayList<>();
 
         postsList.forEach((post -> {
-            PostDto postDto = new PostDto();
+            PostDto postDto = this.modelMapper.map(post,PostDto.class);
 
-            postDto.setTitle(post.getPostTitle());
-            postDto.setPostBody(post.getPostContent());
-            postDto.setPostImageName(post.getImageName());
-
-            Date getFormatDate = utilityService.formatDate(post.getAddedDate());
-            postDto.setPostAddedDate(getFormatDate);
+            postDto.setAddedDate(utilityService.formatDate(post.getAddedDate()));
 
             postDtoList.add(postDto);
         }));
@@ -133,19 +115,48 @@ public class PostService {
         List<PostDto> postDtoList = new ArrayList<>();
 
         postsList.forEach((post -> {
-            PostDto postDto = new PostDto();
+            PostDto postDto = this.modelMapper.map(post,PostDto.class);
 
-            postDto.setTitle(post.getPostTitle());
-            postDto.setPostBody(post.getPostContent());
-            postDto.setPostImageName(post.getImageName());
-
-            Date getFormatDate = utilityService.formatDate(post.getAddedDate());
-            postDto.setPostAddedDate(getFormatDate);
+            postDto.setAddedDate(utilityService.formatDate(post.getAddedDate()));
 
             postDtoList.add(postDto);
         }));
 
         return postDtoList;
+    }
+
+    public void deleteAPost(Integer postId){
+
+        Posts post = postsDao.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundExceptions("post","id",postId));
+
+        postsDao.deleteById(postId);
+    }
+
+    public PostResponse getAllPostsList(Integer pageSize, Integer pageNumber, String sortBy, String sortDir){
+
+        Sort sort = (sortDir.equalsIgnoreCase("asc")) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+
+        Page<Posts> pageOfPost = postsDao.findAll(pageable);
+
+        List<Posts> postsList = pageOfPost.getContent();
+
+        List<PostDto> postDtoList = postsList.stream().
+                map((posts) -> this.modelMapper.map(posts,PostDto.class)).
+                collect(Collectors.toList());
+
+        PostResponse postResponse = new PostResponse();
+
+        postResponse.setPostContent(postDtoList);
+        postResponse.setPageNumber(pageOfPost.getNumber());
+        postResponse.setPageSize(pageOfPost.getSize());
+        postResponse.setTotalElements(pageOfPost.getTotalElements());
+        postResponse.setTotalPages(pageOfPost.getTotalPages());
+        postResponse.setLastPage(pageOfPost.isLast());
+
+        return postResponse;
     }
 
 }

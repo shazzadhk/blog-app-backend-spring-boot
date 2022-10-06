@@ -8,47 +8,46 @@ public class PostDto {
 
     @NotBlank
     @Size(min = 15,max = 500)
-    private String title;
+    private String postTitle;
 
-    private String postBody;
+    private String postContent;
 
-    private String postImageName;
+    private String imageName;
 
-    private Date postAddedDate;
+    private Date addedDate;
 
     public PostDto() {
     }
 
-    public String getTitle() {
-        return title;
+    public String getPostTitle() {
+        return postTitle;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPostTitle(String postTitle) {
+        this.postTitle = postTitle;
     }
 
-    public String getPostBody() {
-        return postBody;
+    public String getPostContent() {
+        return postContent;
     }
 
-    public void setPostBody(String postBody) {
-        this.postBody = postBody;
+    public void setPostContent(String postContent) {
+        this.postContent = postContent;
     }
 
-    public String getPostImageName() {
-        return postImageName;
+    public String getImageName() {
+        return imageName;
     }
 
-    public void setPostImageName(String postImageName) {
-        this.postImageName = postImageName;
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
-    public Date getPostAddedDate() {
-        return postAddedDate;
+    public Date getAddedDate() {
+        return addedDate;
     }
 
-    public void setPostAddedDate(Date postAddedDate) {
-        this.postAddedDate = postAddedDate;
+    public void setAddedDate(Date addedDate) {
+        this.addedDate = addedDate;
     }
-
 }
