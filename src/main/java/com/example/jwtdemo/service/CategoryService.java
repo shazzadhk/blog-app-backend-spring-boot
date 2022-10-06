@@ -5,6 +5,7 @@ import com.example.jwtdemo.entity.Category;
 import com.example.jwtdemo.exceptions.ApiException;
 import com.example.jwtdemo.exceptions.ResourceNotFoundExceptions;
 import com.example.jwtdemo.payloads.CategoryDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,23 +15,23 @@ public class CategoryService {
     @Autowired
     private CategoryDao categoryDao;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     public CategoryDto addCategory(CategoryDto categoryDto){
         Category category = new Category();
         category.setCategoryTitle(categoryDto.getCategoryTitle());
-        category.setCategoryDescription(categoryDto.getCategoryDesc());
+        category.setCategoryDescription(categoryDto.getCategoryDescription());
         categoryDao.save(category);
 
-        return categoryDto;
+        return this.modelMapper.map(category,CategoryDto.class);
     }
 
     public CategoryDto getCategoryById(Integer categoryId){
         Category category = categoryDao.findById(categoryId).
                 orElseThrow(() -> new ResourceNotFoundExceptions("category","categoryId",categoryId));
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setCategoryTitle(category.getCategoryTitle());
-        categoryDto.setCategoryDesc(category.getCategoryDescription());
 
-        return categoryDto;
+        return this.modelMapper.map(category,CategoryDto.class);
     }
 
     public CategoryDto updateCategory(Integer categoryId,CategoryDto categoryDto){
@@ -38,16 +39,11 @@ public class CategoryService {
                 orElseThrow(() -> new ResourceNotFoundExceptions("category","categoryId",categoryId));
 
         category.setCategoryTitle(categoryDto.getCategoryTitle());
-        category.setCategoryDescription(categoryDto.getCategoryDesc());
+        category.setCategoryDescription(categoryDto.getCategoryDescription());
 
         categoryDao.save(category);
 
-        CategoryDto categoryDto1 = new CategoryDto();
-
-        categoryDto1.setCategoryTitle(category.getCategoryTitle());
-        categoryDto1.setCategoryDesc(category.getCategoryDescription());
-
-        return categoryDto1;
+        return this.modelMapper.map(category,CategoryDto.class);
     }
 
     public void deleteCategory(Integer categoryId){

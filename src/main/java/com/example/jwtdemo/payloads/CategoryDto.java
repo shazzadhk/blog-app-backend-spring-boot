@@ -11,7 +11,7 @@ public class CategoryDto {
 
     @NotBlank
     @Size(min = 10,message = "Minimum size of category Description is 10")
-    private String categoryDesc;
+    private String categoryDescription;
 
     public CategoryDto() {
     }
@@ -24,11 +24,11 @@ public class CategoryDto {
         this.categoryTitle = categoryTitle;
     }
 
-    public String getCategoryDesc() {
-        return categoryDesc;
+    public String getCategoryDescription() {
+        return categoryDescription;
     }
 
-    public void setCategoryDesc(String categoryDesc) {
-        this.categoryDesc = categoryDesc;
+    public void setCategoryDescription(String categoryDescription) {
+        this.categoryDescription = categoryDescription;
     }
 }

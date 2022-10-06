@@ -45,7 +45,7 @@ public class PostService {
 
         posts.setPostTitle(postDto.getPostTitle());
         posts.setPostContent(postDto.getPostContent());
-        posts.setImageName("default.png");
+//        posts.setImageName("default.png");
 
         Date getFormatDate = utilityService.formatDate(new Date());
 
@@ -82,6 +82,7 @@ public class PostService {
 
         post.setPostTitle(postDto.getPostTitle());
         post.setPostContent(postDto.getPostContent());
+        post.setImageName(postDto.getImageName());
 
         postsDao.save(post);
 
@@ -158,5 +159,20 @@ public class PostService {
 
         return postResponse;
     }
+
+    public List<PostDto> searchPost(String searchKeyword){
+        List<Posts> postsList = postsDao.searchPost("%"+searchKeyword+"%");
+
+        List<PostDto> postDtoList = new ArrayList<>();
+
+        postsList.forEach((post) -> {
+            PostDto postDto = this.modelMapper.map(post,PostDto.class);
+            postDtoList.add(postDto);
+        });
+
+        return postDtoList;
+    }
+
+
 
 }
