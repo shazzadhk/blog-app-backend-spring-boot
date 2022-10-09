@@ -9,6 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CategoryService {
 
@@ -50,6 +53,20 @@ public class CategoryService {
         Category category = categoryDao.findById(categoryId).
                 orElseThrow(() -> new ResourceNotFoundExceptions("category","categoryId",categoryId));
         categoryDao.deleteById(categoryId);
+    }
+
+    public List<CategoryDto> getAllCategories(){
+
+        List<Category> categoryList = categoryDao.findAll();
+
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+
+        categoryList.forEach((category) -> {
+            CategoryDto categoryDto = this.modelMapper.map(category,CategoryDto.class);
+            categoryDtoList.add(categoryDto);
+        });
+
+        return categoryDtoList;
     }
 
 }

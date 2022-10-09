@@ -5,6 +5,7 @@ import javax.validation.constraints.Size;
 
 public class CategoryDto {
 
+    private Integer categoryId;
     @NotBlank
     @Size(min = 4,message = "Minimum size of category title is 4")
     private String categoryTitle;
@@ -14,6 +15,14 @@ public class CategoryDto {
     private String categoryDescription;
 
     public CategoryDto() {
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getCategoryTitle() {
