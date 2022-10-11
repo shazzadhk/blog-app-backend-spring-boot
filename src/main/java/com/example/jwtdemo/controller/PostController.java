@@ -1,6 +1,5 @@
 package com.example.jwtdemo.controller;
 
-import com.example.jwtdemo.entity.Posts;
 import com.example.jwtdemo.payloads.ApiResponse;
 import com.example.jwtdemo.payloads.PostDto;
 import com.example.jwtdemo.payloads.PostResponse;
@@ -21,10 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
-
 @RestController
-@CrossOrigin
 @RequestMapping("/api/post")
 public class PostController {
 

@@ -24,7 +24,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin
 public class AuthenticationController {
 
     @Autowired
