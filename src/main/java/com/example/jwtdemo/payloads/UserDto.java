@@ -10,6 +10,8 @@ import javax.validation.constraints.Size;
 
 public class UserDto {
 
+    private Integer id;
+
     @NotEmpty(message = "Name can not be empty")
     @Size(min = 4,message = "Name must be minimum of 4 characters")
     private String name;
@@ -24,6 +26,14 @@ public class UserDto {
 
     @NotEmpty(message = "Password can not be mt")
     private String password;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
